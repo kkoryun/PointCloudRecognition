@@ -90,17 +90,48 @@
 	}
 
 
-
-    void matches(std::vector<BasePoint>& object, std::vector<BasePoint>& odesc, 
-                 std::vector<BasePoint>& scene, std::vector<BasePoint>& sdesc ,
-                 std::vector<BasePoint>& match
-        )
+    float diff(std::vector<float> v1, std::vector<float> v2)
     {
-        for (size_t i = 0; i < object.size(); i++)
+        if (v1.size() != v2.size())
+            return 0;
+        std::vector<float> res(v1.size());
+        for (size_t i = 0; i < v1.size(); i++)
         {
-            for (size_t j = 0; j < scene.size(); j++)
+            res[i] = v1[i] - v2[i];
+        }
+        float sum = 0;
+
+        for (size_t i = 0; i < res.size(); i++)
+        {
+            sum += res[i] * res[i];
+        }
+
+        return sqrt(sum);
+    }
+
+    void matches(std::vector<std::vector<float>>& odesc, std::vector<std::vector<float>>& sdesc,
+                 std::vector<int>& match)
+    {
+        for (size_t i = 0; i < odesc.size(); i++)
+        {
+            match.push_back(-1);
+        }
+        std::vector<float> dist(odesc.size());
+        for (size_t i = 0; i < odesc.size(); i++)
+        {
+            dist[i] = INT_MAX;
+        }
+
+        for (size_t i = 0; i < odesc.size(); i++)
+        {
+            for (size_t j = 0; j < sdesc.size(); j++)
             {
-                //if()
+                if (diff(odesc[i], sdesc[j]) <dist[i])
+                {
+                    match[i] = j;
+                }
             }
         }
     }
+
+   

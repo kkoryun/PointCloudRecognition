@@ -10,8 +10,9 @@ class NormalsEstimator
 {
 public:
 	NormalsEstimator() {}
-	void calculate(std::vector<BasePoint> & points, std::vector<BasePoint> & normals)
+	void calculate(std::vector<BasePoint> & points, std::vector<std::vector<float>> & desc)
 	{
+        desc.clear();
 		std::vector< std::vector<BasePoint> > nearests;
 		findKNearests(points, nearests, 10);
 
@@ -19,7 +20,7 @@ public:
 		auto itn = nearests.begin();
 		for (auto itp = points.begin(); itp != points.end(),itn!=nearests.end(); itp++,itn++)
 		{
-			normals.push_back(calculatePointNormal(*itp, *itn));
+            desc.push_back(calculatePointNormalDesc(*itp, *itn));
 		}
 		
 		//for (auto it = points.begin(); it != points.end(); it++)
@@ -36,29 +37,49 @@ public:
 
 	}
 	
-	BasePoint calculatePointNormal(BasePoint point, std::vector<BasePoint> & locality)
+    std::vector<float> calculatePointNormalDesc(BasePoint point, std::vector<BasePoint> & locality)
 	{
 		BasePoint pointNormal;
 		std::vector<BasePoint> nearests;
 		findNearests(locality, nearests);
 
-		for (auto it = locality.begin(),i = nearests.begin(); it != locality.end(),i!=nearests.end(); i++,it++)
+        std::vector<float> desc;
+        std::vector<BasePoint> pointsNormals(locality.size());
+        
+        int i = 0;
+		for (auto it1 = locality.begin(), it2 = nearests.begin(); 
+            it1 != locality.end(), it2 !=nearests.end(), i<locality.size();
+            it2++, it1++,i++)
 		{
 			BasePoint v1;
-			v1.x = point.x - it->x;
-			v1.y = point.y - it->y;
-			v1.z = point.z - it->z;
+			v1.x = point.x - it1->x;
+			v1.y = point.y - it1->y;
+			v1.z = point.z - it1->z;
 
-			BasePoint nearest = *i;
+			BasePoint nearest = *it2;
 			BasePoint v2;
-			v2.x = nearest.x - it->x;
-			v2.y = nearest.y - it->y;
-			v2.z = nearest.z - it->z;
+			v2.x = nearest.x - it1->x;
+			v2.y = nearest.y - it1->y;
+			v2.z = nearest.z - it1->z;
 
 			BasePoint normal;
 			normal.x = (v1.y * v2.z) - (v1.z*v2.y);
 			normal.y = (v1.z*v2.x) - (v1.x*v2.z);
 			normal.z = (v1.x*v2.y) - (v1.y*v2.x);
+
+            //pointsNormals[i].x += normal.x;
+            //pointsNormals[i].y += normal.y;
+            //pointsNormals[i].z += normal.z;
+
+            for (size_t i = 0; i < locality.size(); i++)
+            {
+                if (locality[i] == *it1 || locality[i] == *it2) 
+                {
+                    pointsNormals[i].x += normal.x;
+                    pointsNormals[i].y += normal.y;
+                    pointsNormals[i].z += normal.z;
+                }
+            }
 
 			//float norm = sqrtf(normal.x*normal.x + normal.y*normal.y + normal.z*normal.z);
 			//normal.x /= norm;
@@ -69,7 +90,19 @@ public:
 			pointNormal.y += normal.y;
 			pointNormal.z += normal.z;
 		}
-		return pointNormal;
+
+        osg::Vec3 v(pointNormal.x, pointNormal.y, pointNormal.z);
+        v.normalize();
+
+        for (auto it = pointsNormals.begin(); it != pointsNormals.end(); it++)
+        {
+            osg::Vec3 vec(it->x, it->y, it->z);
+            vec.normalize();
+            desc.push_back(vec*v);
+        }
+
+
+		return desc;
 	}
 	
 private:
@@ -127,8 +160,8 @@ private:
 		float x = p1.x - p2.x;
 		float y = p1.y - p2.y;
 		float z = p1.z - p2.z;
-		//return sqrtf(x*x + y*y + z*z);
-		return x*x + y*y + z*z;
+		return sqrtf(x*x + y*y + z*z);
+		//return x*x + y*y + z*z;
 	}
 };
 

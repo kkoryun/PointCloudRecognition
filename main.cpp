@@ -19,7 +19,7 @@ std::queue<osg::Vec3d> pointq;
 BasePoint P1;
 BasePoint P2;
 
-std::vector<BasePoint> objectNormals, sceneNormals;
+std::vector<std::vector<float>> objectDesc, sceneDesc;
 std::vector<BasePoint> objectPC, scenePC;
 
 
@@ -60,9 +60,24 @@ void changeData(int key) {
 			p2.z = P2.z;
 			findPointInBound(data[i], scenePC, p1, p2);
 			NormalsEstimator ne;
-			
-			ne.calculate(scenePC, sceneNormals);
+			ne.calculate(scenePC, sceneDesc);
+            std::vector<int> match;
+            matches(objectDesc, sceneDesc, match);
 			//scene.setNormals(boundPoints,normals);
+            float x = 0, y = 0, z = 0;
+            for (size_t i = 0; i < match.size(); i++)
+            {
+                x += scenePC[match[i]].x;
+                y += scenePC[match[i]].y;
+                z += scenePC[match[i]].z;
+            }
+
+            BasePoint p;
+            p.x = x;
+            p.y = y;
+            p.z = z;
+
+            
 		}
 	}
 
@@ -85,7 +100,7 @@ void changeData(int key) {
 		findPointInBound(data[i], objectPC, P1, P2);
      
 		NormalsEstimator ne;
-		ne.calculate(objectPC, objectNormals);
+		ne.calculate(objectPC, objectDesc);
 		tracking = true;
 	}
 }

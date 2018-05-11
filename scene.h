@@ -88,7 +88,8 @@ public:
 		m_dragger->setMatrix(Matrix::scale(scale) * Matrix::translate(translate));
 	}
 
-private:
+    
+//private:
 	osg::Vec3 m_p1, m_p2;
 	osg::ref_ptr<osgManipulator::TabBoxDragger> m_dragger;
 	//osg::ref_ptr<osg::Geometry> m_geometry;
@@ -130,10 +131,47 @@ public:
 		m_geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::QUADS, 0, vertices->size()));
 
 	}
-private:
+protected:
 	BasePoint m_min, m_max;
 
 	osg::ref_ptr<osg::Geometry> m_geometry;
+};
+
+class PointsNormalsItem : public SceneItem{
+public:
+    PointsNormalsItem(): SceneItem()
+    {
+        m_geometry = new Geometry;
+        m_geometry->getOrCreateStateSet()->setMode(
+            GL_LIGHTING, osg::StateAttribute::OFF);
+        m_geode->addDrawable(m_geometry.get());
+    };
+
+    void create(const std::vector<BasePoint> & points, const std::vector<BasePoint> & normals)
+    {
+        ref_ptr<Vec3Array> vertices = new Vec3Array;
+
+        ref_ptr<Vec3Array> colors = new Vec3Array;
+
+
+        vertices->reserve(data.size());
+        for (auto p_it = points.begin(), n_it = normals.begin(); 
+            p_it != points.end() || n_it != normals.end();
+            p_it++, n_it++)
+        {
+            vertices->push_back(Vec3(p_it->x, p_it->y, p_it->z));
+            vertices->push_back(Vec3(p_it->x + n_it->x, p_it->y + n_it->y, p_it->z + n_it->z));
+        }
+
+        colors->push_back(Vec3(1.f, 0, 0));
+
+        m_geometry->setVertexArray(vertices.get());
+        m_geometry->setColorArray(colors.get(), Array::BIND_OVERALL);
+        m_geometry->addPrimitiveSet(new DrawArrays(PrimitiveSet::LINES, 0, vertices->size()));
+    }
+protected:
+
+    osg::ref_ptr<osg::Geometry> m_geometry;
 };
 
 class Scene
@@ -145,9 +183,11 @@ public:
 		m_pointCloud = std::shared_ptr<PointCloudSceneItem>(new PointCloudSceneItem);
 		m_grid = std::shared_ptr<GridSceneItem>(new GridSceneItem);
 		m_box = std::shared_ptr<BoxSceneItem>(new BoxSceneItem);
+        m_normals = std::shared_ptr<PointsNormalsItem>(new PointsNormalsItem);
 		m_root->addChild(m_pointCloud->getRoot());
 		m_root->addChild(m_grid->getRoot());
 		m_root->addChild(m_box->getRoot());
+        m_root->addChild(m_normals->getRoot());
 	}
 
 	osg::ref_ptr<osg::Group> getRoot() const 
@@ -181,9 +221,30 @@ public:
 		m_root->removeChild(m_box->getRoot());
 		m_box = box;
 	}
-private:
+
+    void setNormals(const std::vector<BasePoint>& points,const std::vector<BasePoint>& normals)
+    {
+        std::shared_ptr<PointsNormalsItem> pointsNormals = std::shared_ptr<PointsNormalsItem>(new PointsNormalsItem);
+        pointsNormals->create(points, normals);
+        m_root->addChild(pointsNormals->getRoot());
+        m_root->removeChild(m_normals->getRoot());
+        m_normals = pointsNormals;
+    }
+
+protected:
+    template<class SceneItemType>
+    void changeSceneItem(std::shared_ptr<SceneItemType> oldItem)
+    {
+        std::shared_ptr<SceneItemType> newItem = std::shared_ptr<SceneItemType>(new SceneItemType);
+        //item->create();
+        m_root->addChild(newItem->getRoot());
+        m_root->removeChild(oldItem->getRoot());
+        oldItem = newItem;
+    }
+protected:
 	osg::ref_ptr<osg::Group> m_root;
 	std::shared_ptr<PointCloudSceneItem> m_pointCloud;
 	std::shared_ptr<GridSceneItem> m_grid;
 	std::shared_ptr<BoxSceneItem> m_box;
+    std::shared_ptr<PointsNormalsItem> m_normals;
 };
