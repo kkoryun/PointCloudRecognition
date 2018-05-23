@@ -154,7 +154,8 @@ public:
         ref_ptr<Vec3Array> colors = new Vec3Array;
 
 
-        vertices->reserve(data.size());
+        vertices->reserve(points.size());
+        vertices->reserve(points.size());
         for (auto p_it = points.begin(), n_it = normals.begin(); 
             p_it != points.end() || n_it != normals.end();
             p_it++, n_it++)

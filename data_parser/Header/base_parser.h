@@ -4,31 +4,31 @@
 
 namespace Parsers {
 
-	class Parser
-	{
-	public:
-		explicit Parser(std::string dataPath = "") {
-			m_dataPath = dataPath;
-		}
+    class Parser
+    {
+    public:
+        explicit Parser(std::string dataPath = "") {
+            m_dataPath = dataPath;
+        }
 
-		void setFilePath(std::string dataPath) {
-			auto it = dataPath.end() - 1;
-			if(*it != '/')
-			{
-				dataPath.push_back('/');
-			}
+        void setFilePath(std::string dataPath) {
+            auto it = dataPath.end() - 1;
+            if (*it != '/')
+            {
+                dataPath.push_back('/');
+            }
 
-			m_dataPath = dataPath;
-		}
-		std::string getFilePath() const {
-			return m_dataPath;
-		}
-	protected:
-		virtual void parse() = 0;
-		virtual ~Parser(){}
+            m_dataPath = dataPath;
+        }
+        std::string getFilePath() const {
+            return m_dataPath;
+        }
+    protected:
+        virtual void parse() = 0;
+        virtual ~Parser() {}
 
-	protected:
+    protected:
 
-		std::string m_dataPath;
-	};
+        std::string m_dataPath;
+    };
 }

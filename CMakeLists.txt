@@ -8,16 +8,20 @@ add_subdirectory(kdTree)
 add_subdirectory(description)
 
 #target_link_libraries(${PROJECT_NAME} data_parser) 
+#TODO
+#hard code start 
+set(OSG_DIR C:/Users/koryu/source/libs/OSG)
+#hard code end
 
-set(OSG_LIB_PATH F:/library/OpenSceneGraph/Debug/lib)
+set(OSG_LIB_PATH ${OSG_DIR}/lib)
 set(OSG_LIBRARY ${OSG_LIB_PATH})
 set(OSGVIEWER_LIBRARY ${OSG_LIB_PATH})
 set(OSGGA_LIBRARY ${OSG_LIB_PATH})
 set(OSGUTIL_LIBRARY ${OSG_LIB_PATH})
 set(OSGMANIPULATOR_LIBRARY ${OSG_LIB_PATH})
-set(OSG_INCLUDE_DIR F:/library/OpenSceneGraph/Debug/include)
+set(OSG_INCLUDE_DIR ${OSG_DIR}/include)
 set(OPENTHREADS_LIBRARY ${OSG_LIB_PATH})
-set(OPENTHREADS_INCLUDE_DIR F:/library/OpenSceneGraph/Debug/include)
+set(OPENTHREADS_INCLUDE_DIR ${OSG_DIR}/include)
 
 include_directories(${PROJECT_NAME} PUBLIC ${OSG_INCLUDE_DIR})
 
