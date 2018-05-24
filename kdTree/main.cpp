@@ -32,7 +32,7 @@ public:
     float y;
 };
 
-std::vector<Point>  data = {{2,2}, {2,4}, {0,5}, {4,3},{3,5},{3,8},{5,6},
+std::vector<Point>  points = {{2,2}, {2,4}, {0,5}, {4,3},{3,5},{3,8},{5,6},
 {6,7},{8,6},{8,4},{8,2},{5,2},{11,6}};
 int cluster_size = 2;
 
@@ -94,13 +94,13 @@ int main()
 
     KdTree<Point> kdtree;
 
-    auto med = findMedian(data.begin(), data.end(), d);
+    auto med = findMedian(points.begin(), points.end(), d);
     kdtree.insert(*med);
 
 
     ++d;
-    kdtree.insert(*findMedian(data.begin(), med, d));
-    kdtree.insert(*findMedian(med + 1, data.end(), d));
+    kdtree.insert(*findMedian(points.begin(), med, d));
+    kdtree.insert(*findMedian(med + 1, points.end(), d));
 
 
     //std::string KITTI_DATA_PATH = "C:/Project/2011_09_26_drive_0001_extract/2011_09_26/2011_09_26_drive_0001_extract";

@@ -35,6 +35,43 @@ private:
 };
 */
 
+template<class Type, unsigned mod = 1>
+class Crementor
+{
+public:
+    Crementor():value(0)
+    {}
+
+    Crementor& operator++()
+    {
+        try
+        {
+            value++;
+            value = value % mod;
+        }
+        catch(const std::exception& e)
+        {
+
+        }
+        return *this;
+    }
+
+    /*   Crementor operator++(int)
+       {
+
+           return *this;
+       }*/
+protected:
+    Type value;
+};
+
+//template<unsigned mod = 1>
+//using NodeLevelType = Crementor<unsigned, mod>;
+
+//NodeLevelType<3> level;
+Crementor<unsigned, 3> level;
+
+//level++;
 
 class Node
 {
@@ -84,7 +121,8 @@ public:
     KdTreeLeaf(): DataNode<std::vector<pointType>>() {};
 };
 
-enum {
+enum
+{
     X = 0,
     Y = 1,
     Z = 2
@@ -120,32 +158,30 @@ public:
     Node* find(T point)
     {
         Node* node = m_root;
-        while (node != nullptr)
+        while(node != nullptr)
         {
             KdTreeNode<T>* n = dynamic_cast<KdTreeNode<T>*>(node);
-            if (node->m_left == nullptr && node->m_right == nullptr)
+            if(node->m_left == nullptr && node->m_right == nullptr)
             {
                 return node;
             }
-            if (point[n->m_level] <= n->m_data[n->m_level])
+            if(point[n->m_level] <= n->m_data[n->m_level])
             {
-                if (n->m_left == nullptr) return node;
+                if(n->m_left == nullptr) return node;
                 node = n->m_left;
             }
-            if (point[n->m_level] > n->m_data[n->m_level])
+            if(point[n->m_level] > n->m_data[n->m_level])
             {
-                if (n->m_right == nullptr) return node;
+                if(n->m_right == nullptr) return node;
                 node = n->m_right;
             }
         }
         return node;
     }
 
-
-
     void insert(const T& point)
     {
-        if (m_root == nullptr)
+        if(m_root == nullptr)
         {
             m_root = new KdTreeNode<T>(point, 0);
             return;
@@ -153,27 +189,26 @@ public:
 
         auto it = find(point);
 
-        if (dynamic_cast<KdTreeLeaf<T>*>(it))
+        if(dynamic_cast<KdTreeLeaf<T>*>(it))
         {
             dynamic_cast<KdTreeLeaf<T>*>(it)->m_data.push_back(point);
         }
 
-        if (dynamic_cast<KdTreeNode<T>*>(it))
+        if(dynamic_cast<KdTreeNode<T>*>(it))
         {
             auto node = dynamic_cast<KdTreeNode<T>*>(it);
             int d = node->m_level;
             inc(d);
-            if (point[node->m_level] <= node->m_data[node->m_level])
+            if(point[node->m_level] <= node->m_data[node->m_level])
             {
                 node->m_left = new KdTreeNode<T>(point, d);
             }
-            if (point[node->m_level] > node->m_data[node->m_level])
+            if(point[node->m_level] > node->m_data[node->m_level])
             {
                 node->m_right = new KdTreeNode<T>(point, d);
             }
         }
     }
-
 
 
     void create(const std::vector<BasePoint>& points)
@@ -189,7 +224,7 @@ public:
     //TODO bad method need median search 
     void split_sort(const std::vector<BasePoint>& points)
     {
-        for (size_t i = 0; i < points.size(); i++)
+        for(size_t i = 0; i < points.size(); i++)
         {
             X.push_back(points[i].x);
             Y.push_back(points[i].y);

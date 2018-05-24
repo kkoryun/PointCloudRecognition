@@ -14,7 +14,7 @@
 #include "description/normalsEstimation.h"
 
 Scene scene;
-std::vector<std::vector<KittiPoint> > data;
+std::vector<std::vector<KittiPoint> > pointCloud;
 std::queue<osg::Vec3d> pointq;
 BasePoint P1;
 BasePoint P2;
@@ -32,19 +32,19 @@ void changeData(int key) {
     {
         i++;
         i %= 3;
-        scene.setPointCloud(data[i]);
+        scene.setPointCloud(pointCloud[i]);
     }
     if (key == 89)
     {
 
         i--;
         i %= 3;
-        scene.setPointCloud(data[i]);
+        scene.setPointCloud(pointCloud[i]);
     }
 
     if (key == 89 || key == 79)
     {
-        auto bound = getDataBound(data[i]);
+        auto bound = getDataBound(pointCloud[i]);
         scene.setGrid(bound.first, bound.second);
 
         if (tracking)
@@ -58,7 +58,7 @@ void changeData(int key) {
             p2.x = P2.x + 1;
             p2.y = P2.y + 1;
             p2.z = P2.z;
-            findPointInBound(data[i], scenePC, p1, p2);
+            findPointInBound(pointCloud[i], scenePC, p1, p2);
             NormalsEstimator ne;
             ne.calculate(scenePC, sceneDesc);
             std::vector<int> match;
@@ -97,7 +97,7 @@ void changeData(int key) {
         P2.y = p2.y();
         P2.z = p2.z();
 
-        findPointInBound(data[i], objectPC, P1, P2);
+        findPointInBound(pointCloud[i], objectPC, P1, P2);
 
         NormalsEstimator ne;
         ne.calculate(objectPC, objectDesc);
@@ -131,13 +131,14 @@ int main()
 {
     //std::string KITTI_DATA_PATH = "C:/Project/2011_09_26_drive_0001_extract/2011_09_26/2011_09_26_drive_0001_extract";
 
+    //TODO
     std::string KITTI_DATA_PATH = "F:/resource/KITTI/2011_09_26_drive_0001_extract/2011_09_26/2011_09_26_drive_0001_extract";
 
     Parsers::KittiParser kittiParser;
     kittiParser.setFilePath(KITTI_DATA_PATH);
 
 
-    kittiParser.readFiles(data, 4);
+    kittiParser.readFiles(pointCloud, 4);
 
     osgViewer::Viewer viewer;
     setting(viewer);
