@@ -1,4 +1,4 @@
-#include "data_parser/Header/kitti_parser.h"
+//#include "../data_parser/Header/kitti_parser.h"
 #include "kdTree.h"
 
 
@@ -60,51 +60,25 @@ std::vector<Point>::iterator findMedian(std::vector<Point>::iterator s, std::vec
 
 }
 
-template<class T, unsigned mod = 1>
-class Mod
-{
-public:
-    Mod(const T& value)
-    {
-        m_mod = mod;
-        m_value = value;
-    };
-
-    Mod operator++()
-    {
-        m_value++;
-        m_value = m_value % m_mod;
-        return *this;
-    }
-
-    operator int()
-    {
-        return m_value;
-    }
-
-private:
-    unsigned m_mod;
-    T m_value;
-};
 
 
 int main()
 {
-    Mod<int, 2> d = 0;
 
-    NodeLevelType<3> depth;
+
+    NodeLevelType<2> depth;
     ++depth;
     ++depth;
     ++depth;
     KdTree<Point> kdtree;
-
-    auto med = findMedian(points.begin(), points.end(), d);
+    
+    auto med = findMedian(points.begin(), points.end(), depth);
     kdtree.insert(*med);
 
 
-    ++d;
-    kdtree.insert(*findMedian(points.begin(), med, d));
-    kdtree.insert(*findMedian(med + 1, points.end(), d));
+    ++depth;
+    kdtree.insert(*findMedian(points.begin(), med, depth));
+    kdtree.insert(*findMedian(med + 1, points.end(), depth));
 
 
     //std::string KITTI_DATA_PATH = "C:/Project/2011_09_26_drive_0001_extract/2011_09_26/2011_09_26_drive_0001_extract";

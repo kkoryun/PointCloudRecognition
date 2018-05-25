@@ -4,9 +4,10 @@
 #include <vector>
 #include <algorithm>
 
-#include"logger/logger.h"
+#include"../logger/logger.h"
 
-#include "pc_struct.h"
+#include "../pc_struct.h"
+
 
 /*
 template<class Key, class Value>
@@ -37,6 +38,7 @@ private:
 };
 */
 
+
 template<class Type, unsigned mod = 1>
 class Crementor
 {
@@ -47,36 +49,34 @@ public:
 
     Crementor& operator++()
     {
-        try
-        {
-            m_value++;
-            m_value = m_value % mod;
-        }
-        catch(const std::exception& e)
-        {
-
-        }
+        m_value = m_value + 1;
+        m_value = m_value % mod;
         return *this;
     }
     Crementor& operator--()
     {
-        try
-        {
-            m_value--;
-            m_value = m_value % mod;
-        }
-        catch(const std::exception& e)
-        {
-
-        }
+        m_value = m_value - 1;
+        m_value = m_value % mod;
         return *this;
     }
-    //Crementor operator++(int)
-    //{
+    Crementor operator++(int)
+    {
+        m_value = m_value + 1;;
+        m_value = m_value % mod;
+        return *this;
+    }
+    Crementor operator--(int)
+    {
+        m_value = m_value - 1;;
+        m_value = m_value % mod;
+        return *this;
+    }
 
-    //    return *this;
-    //}
-
+    operator int()
+    {
+        return static_cast<int>(m_value);
+    }
+    
 protected:
     Type m_value;
 };
@@ -85,7 +85,7 @@ template<unsigned mod = 1>
 using NodeLevelType = Crementor<unsigned, mod>;
 
 //NodeLevelType<3> level;
-Crementor<unsigned, 3> level;
+
 
 //level++;
 
