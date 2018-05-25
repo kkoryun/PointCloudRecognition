@@ -17,6 +17,5 @@ set(SOURCES )
 #add_library(data_parser STATIC ${SOURCES} ${HEADERS})
 
 add_executable(logger main.cpp ${SOURCES} ${HEADERS})
-
-target_link_libraries(${PROJECT_NAME} debug ${GTEST_LIBRARY})
+#target_link_libraries(${PROJECT_NAME} debug ${GTEST_LIBRARY})
 

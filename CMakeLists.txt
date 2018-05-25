@@ -64,7 +64,7 @@ add_executable(${PROJECT_NAME} main.cpp ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} debug ${OSG_LIBRARY_DEBUG} debug ${OSGVIEWER_LIBRARY_DEBUG} 
 debug ${OSGGA_LIBRARY_DEBUG} debug ${OSGUTIL_LIBRARY_DEBUG} debug ${OSGMANIPULATOR_LIBRARY_DEBUG})
 
-message( !!!!!!!!!!!!!!!!! ${GTEST_LIBRARY})
+#message( !!!!!!!!!!!!!!!!! ${GTEST_LIBRARY})
 #message(!!!!!!!!!!!!!!!!!!  ${GTEST_LIBRARY_DEBUG})
 
 target_link_libraries(${PROJECT_NAME} debug ${GTEST_LIBRARY})

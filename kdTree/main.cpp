@@ -81,6 +81,7 @@ public:
     {
         return m_value;
     }
+
 private:
     unsigned m_mod;
     T m_value;
@@ -91,7 +92,10 @@ int main()
 {
     Mod<int, 2> d = 0;
 
-
+    NodeLevelType<3> depth;
+    ++depth;
+    ++depth;
+    ++depth;
     KdTree<Point> kdtree;
 
     auto med = findMedian(points.begin(), points.end(), d);
