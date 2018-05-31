@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <time.h>
 
 using namespace std;
+
 template <class exceptionType>
 class BaseLogger
 {
@@ -11,7 +13,8 @@ protected:
     using T = exceptionType;
 
 public:
-    BaseLogger() 
+    BaseLogger(const string& moduleName):
+        m_moduleName(moduleName)
     {}
     ~BaseLogger() = default;
 
@@ -25,6 +28,15 @@ public:
 
     virtual void log(LOG_TYPE t, const T& e) {};
     virtual void log(LOG_TYPE t, const std::string& s) {};
+
+    virtual void debug(const std::string& s)
+    {
+        log(LOG_TYPE::DEBUG, s);
+    };
+    virtual void info() {};
+    virtual void warn() {};
+    virtual void error() {};
+
 
 protected:
     string getLogTypeStr(const LOG_TYPE& t)
@@ -57,13 +69,16 @@ protected:
         }
         return logTypeStr;
     }
+    string m_moduleName;
+    
 };
 
 template <class exceptionType>
 class FileLogger: public BaseLogger<exceptionType>
 {
 public:
-    FileLogger(std::string logFileName = "logs.txt"): BaseLogger<exceptionType>()
+    FileLogger(const std::string& moduleName, std::string logFileName = "logs.txt"): 
+        BaseLogger<exceptionType>(moduleName)
     {
         openFile(logFileName);
     }
@@ -99,7 +114,8 @@ template <class exceptionType>
 class ConsolLogger: public BaseLogger<exceptionType>
 {
 public:
-    ConsolLogger(std::ostream& outStream): BaseLogger<exceptionType>()
+    ConsolLogger(const std::string& moduleName, std::ostream& outStream): 
+        BaseLogger<exceptionType>(moduleName)
     {
         m_outStream = outStream;
     }

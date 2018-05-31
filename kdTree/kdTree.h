@@ -76,7 +76,7 @@ public:
     {
         return static_cast<int>(m_value);
     }
-    
+
 protected:
     Type m_value;
 };
@@ -131,7 +131,7 @@ private:
 };
 
 template<class pointType>
-class KdTreeLeaf:public DataNode<std::vector<pointType>>
+class KdTreeLeaf: public DataNode<std::vector<pointType>>
 {
 public:
     KdTreeLeaf(): DataNode<std::vector<pointType>>() {};
@@ -150,9 +150,10 @@ class KdTree
 public:
     KdTree()
     {
-        X.reserve(100000);
+        /*X.reserve(100000);
         Y.reserve(100000);
         Z.reserve(100000);
+        */
         m_root = nullptr;
     }
 
@@ -195,12 +196,12 @@ public:
         return node;
     }
 
-    void insert(const T& point)
+    Node* insert(const T& point)
     {
         if(m_root == nullptr)
         {
             m_root = new KdTreeNode<T>(point, 0);
-            return;
+            return nullptr;
         }
 
         auto it = find(point);
@@ -224,6 +225,7 @@ public:
                 node->m_right = new KdTreeNode<T>(point, d);
             }
         }
+        return it;
     }
 
 
@@ -236,7 +238,11 @@ public:
         //root->addLeftChild()
 
     }
-
+    Node* getRoot() const
+    {
+        return m_root;
+    }
+private:
     //TODO bad method need median search 
     void split_sort(const std::vector<BasePoint>& points)
     {
@@ -252,16 +258,16 @@ public:
         std::sort(Z.begin(), Z.end());
     }
 
-private:
+
     void inc(int & d)
     {
         d++;
         d = d % m_depth;
     }
 
-    std::vector<int> X;
-    std::vector<int> Y;
-    std::vector<int> Z;
+    //std::vector<int> X;
+    //std::vector<int> Y;
+    //std::vector<int> Z;
     int m_depth = 2;
     Node * m_root;
 };

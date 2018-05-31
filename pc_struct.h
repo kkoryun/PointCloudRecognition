@@ -77,6 +77,7 @@ std::pair<BasePoint, BasePoint> getDataBound(const std::vector<KittiPoint>& poin
     return{min,max};
 }
 
+
 void findPointInBound(const std::vector<KittiPoint>& points, std::vector<BasePoint>& boundPoints,
     BasePoint min, BasePoint max)
 {

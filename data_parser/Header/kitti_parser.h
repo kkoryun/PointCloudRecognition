@@ -6,6 +6,7 @@
 #include "base_parser.h"
 #include "pc_struct.h"
 
+
 namespace Parsers {
 
     char  const * const KITTI_PC_PATH = "velodyne_points/data/";
@@ -35,8 +36,15 @@ namespace Parsers {
                 std::string(KITTI_PC_PATH) +
                 toKittyFileName(fileCounter) +
                 std::string(".txt");
-
-            file.open(filePath, std::ios::in);
+            try
+            {
+                file.open(filePath, std::ios::in);
+            }
+            catch(const std::exception& e)
+            {
+                //break;
+            }
+           
 
             unsigned int maxCount_ = static_cast<unsigned int>(maxCount);
             while (file.is_open() && fileCounter < maxCount_)

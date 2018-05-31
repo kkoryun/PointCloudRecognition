@@ -4,7 +4,7 @@
 int main()
 {
  
-    FileLogger<std::exception> fl;
+    FileLogger<std::exception> fl("main.cpp");
     fl.log(FileLogger<std::exception>::LOG_TYPE::DEBUG, "bbb");
     fl.log(FileLogger<std::exception>::LOG_TYPE::DEBUG, "bb");
     fl.log(FileLogger<std::exception>::LOG_TYPE::DEBUG, "b");
