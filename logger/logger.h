@@ -33,12 +33,25 @@ public:
     {
         log(LOG_TYPE::DEBUG, s);
     };
-    virtual void info() {};
-    virtual void warn() {};
-    virtual void error() {};
+    virtual void info(const std::string& s)
+    {
+        log(LOG_TYPE::INFO, s);
+    };
+    virtual void warn(const std::string& s)
+    {
+        log(LOG_TYPE::WARN, s);
+    };
+    virtual void error(const std::string& s)
+    {
+        log(LOG_TYPE::ERROR, s);
+    };
 
 
 protected:
+    std::string getLogMetadata(const LOG_TYPE& t)
+    {
+        return ( string("[") + getLogTypeStr(t) + "]" + "Module:" + m_moduleName + "  ");
+    }
     string getLogTypeStr(const LOG_TYPE& t)
     {
         string logTypeStr = "";
@@ -70,14 +83,13 @@ protected:
         return logTypeStr;
     }
     string m_moduleName;
-    
 };
 
 template <class exceptionType>
 class FileLogger: public BaseLogger<exceptionType>
 {
 public:
-    FileLogger(const std::string& moduleName, std::string logFileName = "logs.txt"): 
+    FileLogger(const std::string& moduleName, std::string logFileName = "logs.txt"):
         BaseLogger<exceptionType>(moduleName)
     {
         openFile(logFileName);
@@ -93,7 +105,7 @@ public:
 
     void log(LOG_TYPE t, const std::string& s) override
     {
-        m_file << "[" << getLogTypeStr(t).c_str() << "]: " << s.c_str() << endl;
+        m_file << getLogMetadata(t).c_str() << s.c_str() << endl;
         m_file.flush();
     }
 
@@ -114,10 +126,11 @@ template <class exceptionType>
 class ConsolLogger: public BaseLogger<exceptionType>
 {
 public:
-    ConsolLogger(const std::string& moduleName, std::ostream& outStream): 
-        BaseLogger<exceptionType>(moduleName)
+    ConsolLogger(const std::string& moduleName, std::ostream& outStream = std::cout):
+        BaseLogger<exceptionType>(moduleName),
+        m_outStream(outStream)
     {
-        m_outStream = outStream;
+        //m_outStream = outStream;
     }
     ~ConsolLogger() = default;
 
@@ -126,7 +139,7 @@ public:
 
     void log(LOG_TYPE t, const std::string& s) override
     {
-        m_outStream << "[" << getLogTypeStr(t) << "]: " << s << endl;
+        m_outStream << getLogMetadata(t).c_str() << s << endl;
         m_outStream.flush();
     }
 
@@ -134,3 +147,6 @@ protected:
     std::ostream& m_outStream;
 };
 
+
+using StdFileLogger = FileLogger<std::exception>;
+using StdConsolLogger = ConsolLogger<std::exception>;
