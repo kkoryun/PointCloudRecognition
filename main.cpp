@@ -12,6 +12,9 @@
 #include "userEventHandler.h"
 #include "pc_struct.h"
 #include "description/normalsEstimation.h"
+#include "logger/logger.h"
+
+shared_ptr<StdBaseLogger> logger = shared_ptr<StdBaseLogger>(new StdConsolLogger("main.cpp"));
 
 Scene scene;
 std::vector<std::vector<KittiPoint> > pointCloud;
@@ -139,7 +142,11 @@ int main()
 
 
     kittiParser.readFiles(pointCloud, 4);
-
+    if (pointCloud.size() == 0)
+    {
+        logger->error("Kitti parser can not read data");
+        return 0;
+    }
     osgViewer::Viewer viewer;
     setting(viewer);
 

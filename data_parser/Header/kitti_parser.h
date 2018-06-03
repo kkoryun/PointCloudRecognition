@@ -5,6 +5,7 @@
 
 #include "base_parser.h"
 #include "pc_struct.h"
+#include "logger/logger.h"
 
 
 namespace Parsers {
@@ -25,7 +26,7 @@ namespace Parsers {
         {
             if (m_dataPath == "" || m_dataPath.empty())
             {
-                //LOG	
+                
             }
             pointClouds.clear();
             //std::vector<std::vector<KittiPoint> > pointClouds;

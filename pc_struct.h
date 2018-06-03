@@ -124,7 +124,7 @@ void matches(std::vector<std::vector<float>>& odesc, std::vector<std::vector<flo
     std::vector<float> dist(odesc.size());
     for (size_t i = 0; i < odesc.size(); i++)
     {
-        dist[i] = numeric_limits<float>().max();
+        dist[i] = 100000000;//numeric_limits<float>().max();
     }
 
     for (size_t i = 0; i < odesc.size(); i++)
